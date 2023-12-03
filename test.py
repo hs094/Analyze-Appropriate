@@ -1,3 +1,5 @@
+import datetime
+from datetime import date
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
@@ -49,7 +51,7 @@ choice = option_menu(
 
 if choice == "Home":
     st.title("Hello")
-      
+
 if choice == "Login":
 	st.title("Login")
 	username = st.text_input("User Name")
@@ -79,7 +81,7 @@ if choice == "SignUp":
     st.title("Create New Account")
     create_usertable() 
     new_name = st.text_input("Name")
-    new_dob = st.date_input("Date of Birth")
+    new_dob = st.date_input("Date of Birth", min_value=datetime.date(1923, 1, 1), max_value=date.today())
     education_qualifications = [
     "None",
     "High School Diploma",
