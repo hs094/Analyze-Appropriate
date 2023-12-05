@@ -63,8 +63,38 @@ def view_all_users():
 	data = c.fetchall()
 	return data
 
+def encode_data(data):
+    encoded_data = []
+    
+    for value in data:
+        if isinstance(value, list):  # Handle multiselect lists
+            encoded_values = []
+            for v in value:
+                encoded_values.append(encode_value(v))
+            encoded_data.append(encoded_values)
+        else:
+            encoded_data.append(encode_value(value))
+    
+    return encoded_data
 
+def encode_value(value):
+	if value in ["Everyday"]:
+		return 5
+	elif value in ["Several times a week"]:
+		return 4
+	elif value in ["Once a week"]:
+		return 3
+	elif value in ["Strongly Agree", "Agree", "Yes", "Less than once a week" , "True"]:
+		return 2
+	elif value in ["Neutral", "I prefer not to answer.", "Never"]:
+		return 1
+	elif value in ["Strongly Disagree", "Disagree", "No", "False"]:
+		return 0
+	else:
+		return value  # Keep non-categorical values as they are
 
+# ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"]
+# "Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"
 def main():
 	"""Simple Login App"""
 	
@@ -109,114 +139,87 @@ def main():
 			if result:
 				st.success("Logged In as {}".format(username))
 				with st.form(key="zomato_form"):
+						st.subheader("Complaince Opinion - India ")
+						i = [None] * 4
+						u = [None] * 4
+						a1 = [None] * 10 
+						a2 = [None] * 10 
+						a3 = [None] * 10 
+						a4 = [None] * 10 
+						i[0] = st.radio("Do you feel there is unauthorised access?", ["Yes", "No"], 0, horizontal=True)
+						i[1] = st.radio("Do you feel that applications follow user location data related guidelines?" , ["Yes", "No"], 0, horizontal=True)
+						i[2] = st.radio("Do you think that your sensitive data is being acssessed?)(Call Logs, Financial Data and Files)", ["Yes", "No"], 0, horizontal=True)
+						i[3] = st.radio("Do you feel safe while providing your mobile wallet data etc.?", ["Yes", "No"], 0, horizontal=True)
+						st.subheader("Complaince Opinion - US ")
+						u[0] = st.radio("Are there fair App Permissions?", ["Yes", "No"], 0, horizontal=True)
+						u[1] = st.radio("Are ther adequate Security Measures", ["Yes", "No"], 0, horizontal=True)
+						u[2] = st.radio("Is User Authorization seeked for Data Usage/Sharing?", ["Yes", "No"], 0, horizontal=True)
+						u[3] = st.radio("Do you feel safe for your biometrics?", ["Yes", "No"], 0, horizontal=True)
 						st.subheader("Food Delivery App: Zomato")
-						a10 = st.multiselect(
+						a1[0] = st.multiselect(
                                 'After Experiencing the Zomato Application, what do you perceive as a intended data collection purpose?*',
                                 ['Personalized ads and offers', 'Understanding user behavior', 'Optimization of apps for better engagement', 'Seek Device Information for tailor Device Needs', 'Location-Based Services', 'Social Sharing', 'Friend Recommendations', 'In-app messaging', 'Fitness tracking', 'Augmented reality experiences', 'Game control', 'Performance Monitoring to fix bugs and improve app stability', 'Enhance User Experience', 'Understand data consumption patterns to optimize performance', 'User feedback to to gauge user satisfaction', 'Login Crediantials for 3rd Party Use', 'IP Address Traking', 'Financial and Transactional Data Mishandling/3rd-Party Use', 'Audit logs and activity tracking'],
                                 [])
-						a11 = st.radio("**1.** How often do you use the Zomato app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
-						a12 = st.radio("**2.** Are you aware that Zomato collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a13 = st.radio("**3.** Considering the Indian Personal Data Protection Bill 2019, do you find it ethically acceptable for app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a14 = st.radio("**4.** Zomato asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a15 = st.radio("**5.** What purpose do you think Zomato collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
+						a1[1] = st.radio("**1.** How often do you use the Zomato app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
+						a1[2] = st.radio("**2.** Are you aware that Zomato collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a1[3] = st.radio("**3.** Considering the Indian Personal Data Protection Bill 2019, do you find it ethically acceptable for app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a1[4] = st.radio("**4.** Zomato asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a1[5] = st.radio("**5.** What purpose do you think Zomato collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
 						st.image('./Zomato.jpeg', caption="Zomato app permissions")
-						a16 = st.radio("**6.** Zomato app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
-						a17 = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Zomato?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
-						a18 = st.radio("**8.** Does the app provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a19 = st.radio("**9.** Does the app provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a1[6] = st.radio("**6.** Zomato app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
+						a1[7] = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Zomato?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
+						a1[8] = st.radio("**8.** Does the app provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a1[9] = st.radio("**9.** Does the app provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
 						st.subheader("Food Delivery App: Dominos")
 						a20 = st.multiselect(
                                 'After Experiencing the Dominos Application, what do you perceive as a intended data collection purpose?*',
                                 ['Personalized ads and offers', 'Understanding user behavior', 'Optimization of apps for better engagement', 'Seek Device Information for tailor Device Needs', 'Location-Based Services', 'Social Sharing', 'Friend Recommendations', 'In-app messaging', 'Fitness tracking', 'Augmented reality experiences', 'Game control', 'Performance Monitoring to fix bugs and improve app stability', 'Enhance User Experience', 'Understand data consumption patterns to optimize performance', 'User feedback to to gauge user satisfaction', 'Login Crediantials for 3rd Party Use', 'IP Address Traking', 'Financial and Transactional Data Mishandling/3rd-Party Use', 'Audit logs and activity tracking'],
                                 [])
-						a21 = st.radio("**1.** How often do you use the Dominos app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
-						a22 = st.radio("**2.** Are you aware that Dominos collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a23 = st.radio("**3.** Considering the NTSS , do you find it ethically acceptable for app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a24 = st.radio("**4.** Dominos asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a25 = st.radio("**5.** What purpose do you think Dominos collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
+						a2[1] = st.radio("**1.** How often do you use the Dominos app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
+						a2[2] = st.radio("**2.** Are you aware that Dominos collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a2[3] = st.radio("**3.** Considering the NTSS , do you find it ethically acceptable for app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a2[4] = st.radio("**4.** Dominos asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a2[5] = st.radio("**5.** What purpose do you think Dominos collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
 						st.image('./Dominos.jpeg', caption="Dominos app permissions")
-						a26 = st.radio("**6.** Dominos app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
-						a27 = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Dominos?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
-						a28 = st.radio("**8.** Does the US app. version of Dominos provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a29 = st.radio("**9.** Does the US app. version of Dominos app provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a2[6] = st.radio("**6.** Dominos app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
+						a2[7] = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Dominos?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
+						a2[8] = st.radio("**8.** Does the US app. version of Dominos provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a2[9] = st.radio("**9.** Does the US app. version of Dominos app provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
 						st.subheader("Gaming App: Ludo King")
-						a30 = st.multiselect(
+						a3[0] = st.multiselect(
                                 'After Experiencing the Ludo King Application, what do you perceive as a intended data collection purpose?*',
                                 ['Personalized ads and offers', 'Understanding user behavior', 'Optimization of apps for better engagement', 'Seek Device Information for tailor Device Needs', 'Location-Based Services', 'Social Sharing', 'Friend Recommendations', 'In-app messaging', 'Fitness tracking', 'Augmented reality experiences', 'Game control', 'Performance Monitoring to fix bugs and improve app stability', 'Enhance User Experience', 'Understand data consumption patterns to optimize performance', 'User feedback to to gauge user satisfaction', 'Login Crediantials for 3rd Party Use', 'IP Address Traking', 'Financial and Transactional Data Mishandling/3rd-Party Use', 'Audit logs and activity tracking'],
                                 [])
-						a31 = st.radio("**1.** How often do you use the Ludo King app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
-						a32 = st.radio("**2.** Are you aware that Ludo King collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a33 = st.radio("**3.** Considering the Indian Personal Data Protection Bill 2019, do you find it ethically acceptable for Ludo King app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a34 = st.radio("**4.** Ludo King asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a35 = st.radio("**5.** What purpose do you think Ludo King collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
-						a36 = st.radio("**6.** Ludo King app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
-						a37 = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Ludo King?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
-						a38 = st.radio("**8.** Does the Indian gaming app provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a39 = st.radio("**9.** Does the Indian gaming app provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a3[1] = st.radio("**1.** How often do you use the Ludo King app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
+						a3[2] = st.radio("**2.** Are you aware that Ludo King collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a3[3] = st.radio("**3.** Considering the Indian Personal Data Protection Bill 2019, do you find it ethically acceptable for Ludo King app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a3[4] = st.radio("**4.** Ludo King asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a3[5] = st.radio("**5.** What purpose do you think Ludo King collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
+						a3[6] = st.radio("**6.** Ludo King app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
+						a3[7] = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Ludo King?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
+						a3[8] = st.radio("**8.** Does the Indian gaming app provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a3[9] = st.radio("**9.** Does the Indian gaming app provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
 						st.subheader("Gaming App: Robolox")
-						a40 = st.multiselect(
+						a4[0] = st.multiselect(
                                 'After Experiencing the Robolox Application, what do you perceive as a intended data collection purpose?*',
                                 ['Personalized ads and offers', 'Understanding user behavior', 'Optimization of apps for better engagement', 'Seek Device Information for tailor Device Needs', 'Location-Based Services', 'Social Sharing', 'Friend Recommendations', 'In-app messaging', 'Fitness tracking', 'Augmented reality experiences', 'Game control', 'Performance Monitoring to fix bugs and improve app stability', 'Enhance User Experience', 'Understand data consumption patterns to optimize performance', 'User feedback to to gauge user satisfaction', 'Login Crediantials for 3rd Party Use', 'IP Address Traking', 'Financial and Transactional Data Mishandling/3rd-Party Use', 'Audit logs and activity tracking'],
                                 [])
-						a41 = st.radio("**1.** How often do you use the Robolox app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
-						a42 = st.radio("**2.** Are you aware that Robolox collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a43 = st.radio("**3.** Considering the NTSS, do you find it ethically acceptable for app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a44 = st.radio("**4.** Robolox asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
-						a45 = st.radio("**5.** What purpose do you think Robolox collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
-						a46 = st.radio("**6.** Robolox app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
-						a47 = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Robolox?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
-						a48 = st.radio("**8.** Does the US app. version of Robolox provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						a49 = st.radio("**9.** Does the US app. version of Robolox provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
-						# data = pd.DataFrame([{
-						# 	"Name": username,
-						# 	# "Age": age(username=username),
-						# 	"a10": a10,
-						# 	"a11": a11,
-						# 	"a12": a12,
-						# 	"a13": a13,
-						# 	"a14": a14,
-						# 	"a15": a15,
-						# 	"a16": a16,
-						# 	"a17": a17,
-						# 	"a18": a18,
-						# 	"a19": a19,
-						# 	"a20": a20,
-						# 	"a21": a21,
-						# 	"a22": a22,
-						# 	"a23": a23,
-						# 	"a24": a24,
-						# 	"a25": a25,
-						# 	"a26": a26,
-						# 	"a27": a27,
-						# 	"a28": a28,
-						# 	"a29": a29,
-						# 	"a30": a30,
-						# 	"a31": a31,
-						# 	"a32": a32,
-						# 	"a33": a33,
-						# 	"a34": a34,
-						# 	"a35": a35,
-						# 	"a36": a36,
-						# 	"a37": a37,
-						# 	"a38": a38,
-						# 	"a39": a39,
-						# 	"a40": a40,
-						# 	"a41": a41,
-						# 	"a42": a42,
-						# 	"a43": a43,
-						# 	"a44": a44,
-						# 	"a45": a45,
-						# 	"a46": a46,
-						# 	"a47": a47,
-						# 	"a48": a48,
-						# 	"a49": a49,
-                        # }])
-						d = [username,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21,a22,a23,a24,a25,a26,a27,a28,a29,a30,a31,a32,a33,a34,a35,a36,a37,a38,a39,a40,a41,a42,a43,a44,a45,a46,a47,a48,a49]
+						a4[1] = st.radio("**1.** How often do you use the Robolox app?*", ["Never", "Less than once a week", "Once a week", "Several times a week", "Everyday"], 2, horizontal=True)
+						a4[2] = st.radio("**2.** Are you aware that Robolox collects data about your location, browsing history, and food preferences?*", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a4[3] = st.radio("**3.** Considering the NTSS, do you find it ethically acceptable for app developers to request permission to access files, contacts, and cameras for data collection purposes?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a4[4] = st.radio("**4.** Robolox asks for user consent for data collection. Were you able to understand from the consent which data will be collected by the app?*", ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"], 2, horizontal=True)
+						a4[5] = st.radio("**5.** What purpose do you think Robolox collects data for?*", ["To improve the app's features and functionality", "To provide better/personalized user experience", "To target advertising", "To sell data to third parties", "Other (please specify)"])
+						a4[6] = st.radio("**6.** Robolox app can be used with all features without giving any permissions, as shown in the screenshot above.  (T/F)?", ["True", "False", "I prefer not to answer."], 2, horizontal=True)
+						a4[7] = st.radio("**7.** What do you know think is the purpose of microphone and camera access asked by Robolox?", ["Collect data to provide food preferences", "Permissions are required to access device feature", "For audio search and visual search to help with food recognition", "To sell data to third parties"])
+						a4[8] = st.radio("**8.** Does the US app. version of Robolox provide information about its data retention policies and how long it stores user data?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						a4[9] = st.radio("**9.** Does the US app. version of Robolox provide users with information about how to report privacy concerns or complaints?", ["Yes", "No", "I prefer not to answer."], 2, horizontal=True)
+						d =  a1 + a2 + a3 + a4 + i + u
+						encoded_data = [username] + encode_data(d)
 						submit_button = st.form_submit_button(label="Submit")
 						if submit_button:
 							with open('Database.csv','a', newline='') as f:
 								writer = csv.writer(f)
-								writer.writerow(d)
+								writer.writerow(encoded_data)
 							st.success("Details successfully submitted!")							    
 
 					
@@ -233,8 +236,6 @@ def main():
 			add_userdata(new_user,make_hashes(new_password))
 			st.success("You have successfully created a valid Account")
 			st.info("Go to Login Menu to login")
-
-
 
 if __name__ == '__main__':
 	main()
