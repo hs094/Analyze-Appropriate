@@ -17,9 +17,3 @@ streamlit run app.py
 Measuring and Comparing the Appropriateness of Data Collection Purposes in Mobile Apps Created by Indian and US Developers 
 ### 🚀 Motivation
 Ever wondered how apps seemingly "know" what you're talking about, offering relevant results and recommendations based on your conversations? This project delves into the hidden mechanisms behind these functionalities. We aim to shed light on the data collection practices of mobile apps and assess the appropriateness of their purposes.
-
-# ❤ Deployments
-This web app has been successfully deployed on [Streamlit Community Cloud](https://docs.streamlit.io/streamlit-community-cloud). 
-Follow [this](https://analyze-appropriate.streamlit.app/) link to try our app online.
-
-#### Deployed with ❤ - https://analyze-appropriate.streamlit.app/
